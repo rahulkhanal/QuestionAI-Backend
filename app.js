@@ -12,15 +12,13 @@ app.use(cors());
 app.post("/prompt", async (req, resp) => {
   try {
     let { prompt, body } = req.body;
-    let result;
+    let result, question;
     if (body) {
-      console.log(body);
-      result = await model.generateContent(
-        `forget my all prompt. I will give you some paragraphs of content. you just have a look and i will ask you question related to them later which you need to answer me. remember just answer based on the paragraph. you are not allowed to make your onw answer. if answer is not found there in paragraph just say some invalid response. paragraph goes like this remember it: ${body}`
-      );
+      question = `forget my all prompt. I will give you some paragraphs of content. you just have a look and i will ask you question related to them later which you need to answer me. remember just answer based on the paragraph. you are not allowed to make your onw answer. if answer is not found there in paragraph just say some invalid response. paragraph goes like this remember it: ${body}`;
     } else {
-      result = await model.generateContent(prompt);
+      question = `Based on above content what is answer. ${prompt}`;
     }
+    result = await model.generateContent(question);
     const response = await result.response;
     const text = response.text();
     resp.json(text);
